@@ -132,3 +132,4 @@ document.getElementById("start-button").onclick=function(){
   decorjeux.start();
 };
 decorjeux.start();
+
