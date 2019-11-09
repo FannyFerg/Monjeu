@@ -1,135 +1,161 @@
-var obstacle =[]
-//Mise en place du canvas 
-var decorjeux = {
-  canvas: document.createElement("canvas"),
-  frames: 0,
-  start: function() {
-    this.canvas.width = 900;
-    this.canvas.height = 500;
-    this.context = this.canvas.getContext("2d");
-    document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-    
-    // call updateGameArea() every 20 milliseconds
-    this.interval = setInterval(updatedecorjeux, 20);
-  },
-  clear: function() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  },
- 
-}
-function terrain(){
-      var ctx = decorjeux.context;
-      var W = decorjeux.canvas.width;
-      var H = decorjeux.canvas.height;
+let obstacles;
+let perso;
+let points;
+let gameover;
+let frames = 0;
+var levelsup;
+var speed = 4;
+//Mise en place du canvas
+const context = document.querySelector("#game-board canvas").getContext("2d");
+const W = context.canvas.width;
+const H = context.canvas.height;
 
-      ctx.fillRect(0,480, 900, 20);
-      ctx.fillStyle = "brown";
+class Gameover {
+  constructor() {
+    const img = document.createElement("img");
+    img.onload = () => {
+      this.img = img;
+      this.width = context.canvas.width;
+      this.height = context.canvas.height;
+      this.x =0 ;
+      this.y =0;
     
+    };
+    img.src = "../Monjeu/images/gameOver.png";}
+    paint() {
+      if (!this.img) return;
+      context.drawImage(this.img, this.x, this.y, this.width, this.height);
+    }
   }
-// Fabrique perso
-class Perso {
-  constructor(width, height, color, x, y) {
-    this.width = width;
-    this.height = height;
-    this.color = color;
-    this.x = x;
-    this.y = y;
-    this.speedX = 0;// Vitesse de x
-    this.speedY = 0
-    
+  var gameOver = new Gameover()
+//Fonction dessiner
+function draw() {
+  context.clearRect(0, 0, W, H);
+
+  // Terrain
+  context.fillRect(0, 780, 900, 20);
+  context.fillStyle = "rgb(152,107,68)";
+
+  //Player
+  perso.newPosition();
+  perso.paint();
+
+  //Obstacles
+  if (frames % 130 === 0) {
+    var obstacle = new Obstacle();
+    obstacles.push(obstacle);
   }
-//direction perso 
-newPosition() {
-  this.x += this.speedX;
-  this.y += this.speedY;
-}
-left() {
-  return this.x;
-}
-right() {
-  return this.x + this.width;
-}
-// Creation des rectangles 
-  paint() {
-    var ctx = decorjeux.context;
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+  obstacles.forEach(function(obstacle) {
+    obstacle.x -= speed;
+    obstacle.paint();
+  });
+
+  if(points === 6000){
+    speed = 7;
+    console.log("niv 2")
   }
+  if(points === 8000){
+    speed =9;
+    console.log("niv 3")
+  }
+  if(points === 12000){
+    gameover = true;
+    win = true;
+    console.log("niv winner")
+  }
+  
+  for (obstacle of obstacles) {
+    if (obstacle.hits(perso)) {
+      gameover = true;
+      win = false;
+    }}
+  //Collision
+
+  //Points
+  context.font = "50px Arial";
+  context.textAlign = "right";
+  context.fillStyle = "rgb(152,107,68)";
+  context.fillText(`${points} pts`, W - 50, 100);
+  points++;
+  
+
 }
-var player = new Perso(50, 50, "black", 0,430);
+
+const pressed = {
+  space: false,
+  arrowleft: false,
+  arrowright: false,
+}
+
 document.onkeydown = function(e) {
+  if(!perso) return;
+
   switch (e.keyCode) {
+    case 32:
+      if (pressed.space) return;
+      pressed.up = true;
+      perso.jump();
+      break;
     case 37: // left arrow
-      player.speedX -= 1;
+      if (pressed.arrowleft) return;
+      pressed.arrowleft = true;
+      perso.backward();
       break;
     case 39: // right arrow
-      player.speedX += 1;
+      if (pressed.arrowright)return;
+      pressed.right = true;
+      perso.forward();
       break;
   }
 };
-// Fabrique à Obstacle 
-class Obstacles {
-  constructor(width, height, color, x, y) {
-    this.width = width;
-    this.height = height;
-    this.color = color;
-    this.x = x;
-    this.y = y;
+document.onkeyup = function(e){
+  //if (!perso) return;
+  switch (e.keyCode){
+    // SPACE
+    case 32:
+      pressed.space = false;
+      break;
+    case 37: 
+      pressed.arrowleft = false;
+      perso.speedX = 0;
+      break;
+    case 39:
+      pressed.arrowright = false;
+      perso.speedX = 0;
+      break;
+  }}
+
+function animLoop() {
+  draw();
+  frames++;
+  if (!gameover) {
+    requestAnimationFrame(animLoop);
+  } 
+  else if (points == 12000) {
+  }   // ecran win
+  
+  else {
+      console.log('perdu');
+      context.clearRect(0, 0, W, H);
+      gameOver.paint();
+       // ecran lose
+    }
+
     
   }
 
-// Creation des rectangles 
-  paint() {
-    var ctx = decorjeux.context;
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
-  }
+
+function startGame() {
+  gameover = false;
+  points = 0;
+  perso = new Perso(0,710);
+  obstacles = [];
+  // levelsup = setTimeout(obstacle.x +=10,6000);
+  requestAnimationFrame(animLoop);
 }
 
-
-function updatedecorjeux() {
-  decorjeux.clear();
-  majobstacle();
-  terrain();
-  player.paint();
-  player.newPosition();
-
-}
-
-
-  function majobstacle() {
-    for (i = 0; i < obstacle.length; i++) {
-      obstacle[i].x += -1;
-      obstacle[i].paint();
-    }
-  
-  //definition du décor
-    decorjeux.frames += 1;
-    if (decorjeux.frames % 250 === 0) {
-      var W = decorjeux.canvas.width;
-      var H = decorjeux.canvas.height;
-  
-      var minHeight = 40
-      var maxHeight = 100;
-      var height = Math.floor(Math.random() * (maxHeight - minHeight + 1));//définis de manière aléatoire la taille des obstacles
-      
-      obstacle.push(new Obstacles(110, height , "rgb(152,107,68)", 480, H-height )); //Creation des Obstacles  
-    }
-  }
- 
-  //Iteration #6: points
-function points(){
-  const W = ctx.canvas.width;
-  ctx.font = "50px Arial";
-  ctx.textAlign = "right";
-  ctx.fillStyle = "orange";
-  ctx.fillText(`${points} pts`, W-50, 100);
-  points++;
-
-}
-
-document.getElementById("start-button").onclick=function(){
-  decorjeux.start();
+const $start = document.getElementById("start-button");
+$start.onclick = function() {
+  startGame();
+  $start.blur();
 };
-decorjeux.start();
-

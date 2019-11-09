@@ -2,17 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>hungry zombie</title>
-    <link rel="stylesheet" href="../Monjeux/main.css">
+    <title>jumping man</title>
+    <link rel="stylesheet" href="./main.css" />
   </head>
   <body>
-      <div class="game-intro">
-          <img src="../Monjeux/images/logo.PNG" alt="" class="logo">
-          <br>
-          <button id="start-button">Start</button>
-          <p>Run and avoid obstacles!</p>
-        </div>
-      
-    <script src="../Monjeux/script.js"></script>
+    <div class="game-intro">
+      <img src="./images/logo.PNG" alt="" class="logo" />
+      <br />
+      <button id="start-button">Start</button>
+      <p>Run and avoid obstacles!</p>
+        Touches: <kbd>←</kbd> <kbd>space</kbd> <kbd>→</kbd>
+    </div>
+    <div id="game-board">
+      <canvas width="900" height="800"></canvas>
+    </div>
+    <script src="./perso.js"></script>
+    <script src="./script.js"></script>
+    <script src="./obstacle.js"></script>
   </body>
 </html>
