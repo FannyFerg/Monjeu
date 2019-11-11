@@ -16,7 +16,7 @@ class Perso {
     img.src = "../Monjeu/images/walkingGirl.png";
   }
   jump(){
-    this.speedY = -25;
+    this.speedY = -8;
   }
   forward(){
     this.speedX = 5;

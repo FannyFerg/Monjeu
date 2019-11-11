@@ -9,6 +9,24 @@ var speed = 4;
 const context = document.querySelector("#game-board canvas").getContext("2d");
 const W = context.canvas.width;
 const H = context.canvas.height;
+class win {
+  constructor() {
+    const img = document.createElement("img");
+    img.onload = () => {
+      this.img = img;
+      this.width = context.canvas.width;
+      this.height = context.canvas.height;
+      this.x =0 ;
+      this.y =0;
+    
+    };
+    img.src = "../Monjeu/images/Win.PNG";}
+    paint() {
+      if (!this.img) return;
+      context.drawImage(this.img, this.x, this.y, this.width, this.height);
+    }
+  }
+  var winner =new win();
 
 class Gameover {
   constructor() {
@@ -33,7 +51,7 @@ function draw() {
   context.clearRect(0, 0, W, H);
 
   // Terrain
-  context.fillRect(0, 780, 900, 20);
+  context.fillRect(0, 780, 800, 20);
   context.fillStyle = "rgb(152,107,68)";
 
   //Player
@@ -51,11 +69,11 @@ function draw() {
   });
 
   if(points === 6000){
-    speed = 7;
+    speed = 10;
     console.log("niv 2")
   }
   if(points === 8000){
-    speed =9;
+    speed =12;
     console.log("niv 3")
   }
   if(points === 12000){
@@ -131,7 +149,9 @@ function animLoop() {
   if (!gameover) {
     requestAnimationFrame(animLoop);
   } 
-  else if (points == 12000) {
+  else if (points === 12000) {
+    context.clearRect(0, 0, W, H);
+    win.paint();
   }   // ecran win
   
   else {
@@ -150,7 +170,6 @@ function startGame() {
   points = 0;
   perso = new Perso(0,710);
   obstacles = [];
-  // levelsup = setTimeout(obstacle.x +=10,6000);
   requestAnimationFrame(animLoop);
 }
 

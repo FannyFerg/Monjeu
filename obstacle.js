@@ -7,10 +7,7 @@ class Obstacle {
     this.x = W - this.width;
     this.y = H - this.height - 20;
   }
-  // move(){
-  //   this.x -= 5;
-  
-  // }
+ 
 
   // Création des rectangles
   paint() {
