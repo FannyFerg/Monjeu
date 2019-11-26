@@ -69,11 +69,11 @@ function draw() {
   });
 
   if(points === 6000){
-    speed = 10;
+    speed = 5;
     console.log("niv 2")
   }
   if(points === 8000){
-    speed =12;
+    speed = 7;
     console.log("niv 3")
   }
   if(points === 12000){
