@@ -34,7 +34,7 @@ newPosition() {
   // ne pas aller plus bas que le sol
   let sol = H - 20;
   if (this.y > sol - this.height) this.y = sol - this.height;
-
+  if(this.y> 500 - this.height) this.y = 500 - this.height;
   // la gravité s'applique
   this.speedY += gravity;
 } 
